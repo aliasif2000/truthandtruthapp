@@ -1,0 +1,264 @@
+openapi: 3.0.0
+info:
+  title: Truth and Truth API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/auth/getalluser:
+    get:
+      summary: Get all users
+      tags:
+        - GetUsersData
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+
+  /api/auth/login:
+    post:
+      summary: User login
+      tags:
+        - AuthRoutes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userData:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                  token:
+                    type: string
+        "401":
+          description: Unauthorized - invalid credentials
+
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - AuthRoutes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userData:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                  token:
+                    type: string
+        "400":
+          description: Invalid request body
+
+  /api/auth/resetpassword:
+    post:
+      summary: Reset user password
+      tags:
+        - AuthRoutes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal Server Error
+
+  /api/auth/validateotp:
+    post:
+      summary: Validate OTP for password reset      
+      tags:
+        - AuthRoutes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp:
+                  type: string
+      responses:
+        "201":
+          description: OTP is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Invalid OTP
+        "500":
+          description: Internal Server Error
+
+  /api/auth/forgetpassword:
+    post:
+      summary: Send OTP for resetting forgotten password      
+      tags:
+        - AuthRoutes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+
+  /api/truth/addtruth:
+    post:
+      summary: Add a new truth question
+      tags:
+        - TruthRoutes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryname:
+                  type: string
+                truth:
+                  type: string
+      responses:
+        "201":
+          description: Truth added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      categoryname:
+                        type: string
+                  truth:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      question:
+                        type: string
+                      categoryId:
+                        type: integer
+
+  /api/truth/categorytruth:
+    get:
+      summary: Get truths under a specific category
+      tags:
+        - TruthRoutes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: categoryname
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of truths in the category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    question:
+                      type: string
+                    categoryId:
+                      type: integer

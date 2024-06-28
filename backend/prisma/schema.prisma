@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model otp {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  otp       BigInt
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id           Int     @id @default(autoincrement())
+  categoryname String
+  truths       Truth[]
+}
+
+model Truth {
+  id         Int      @id @default(autoincrement())
+  question   String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
