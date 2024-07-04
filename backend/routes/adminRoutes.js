@@ -17,6 +17,9 @@ adminRoutes.get("/getalluser", getAllUsers);
 
 adminRoutes.post("/addtruth", addTruthController);
 adminRoutes.post("/deletetruth", deleteTruthController);
-adminRoutes.post("/updatetruth", updateTruthController);
+
+adminRoutes.patch("/updatetruth", updateTruthController);
 
 module.exports = adminRoutes;
+
+
