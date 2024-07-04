@@ -16,10 +16,9 @@ module.exports = registerController = async (req, res) => {
       let addUser = {
         ...req.body,
         password: hash,
-        token,
       };
       addUser = await prisma.user.create({ data: addUser });
-      return res.status(201).json({ userData: addUser });
+      return res.status(201).json({ userData: addUser, token });
     } else {
       return res.status(400).send("User is Already Exists");
     }

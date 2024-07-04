@@ -12,7 +12,7 @@ module.exports = otpController = async (req, res) => {
     if (!checkOtp) {
       return res.status(401).send("Invalid Otp");
     }
-    return res.status(201).send("Opt is Valid");
+    return res.status(201).send("Otp is Valid");
   } catch (error) {
     console.error("Error logging in:", error);
     return res.status(500).send("Internal Server Error");
