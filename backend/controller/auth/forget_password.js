@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const nodemailer = require("nodemailer");
 const randomstring = require("randomstring");
+let checkSendMail;
 sendMail = (name, email, randomToken, otp, res, req) => {
   try {
     let transporter = nodemailer.createTransport({
@@ -35,7 +36,8 @@ sendMail = (name, email, randomToken, otp, res, req) => {
         res.status(500).send("Failed to send email.");
       } else {
         res.status(200).json({ message: "Email has been sent.", randomToken });
-        setTimeout(async () => {
+
+        checkSendMail = setTimeout(async () => {
           try {
             console.log("Otp is Delete");
             await prisma.otp.delete({
@@ -87,6 +89,10 @@ module.exports = forgerPasswordController = async (req, res) => {
         data: { token: randomToken },
       });
       await prisma.otp.create({ data: { email: req.body.email, otp } });
+    }
+    //check if mail 
+    if (checkSendMail) {
+      clearTimeout(checkSendMail);
     }
     sendMail(checkUser.username, checkUser.email, randomToken, otp, res, req);
   } catch (error) {
