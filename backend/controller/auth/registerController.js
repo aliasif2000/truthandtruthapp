@@ -5,11 +5,19 @@ const jwt = require("jsonwebtoken");
 
 module.exports = registerController = async (req, res) => {
   try {
+    const checkUsername = await prisma.user.findUnique({
+      where: {
+        username: req.body.username,
+      },
+    });
     const checkUser = await prisma.user.findUnique({
       where: {
         email: req.body.email,
       },
     });
+    if (checkUsername) {
+      return res.status(400).send("Username is Already Exists");
+    }
     if (!checkUser) {
       const hash = await bcrypt.hash(req.body.password, 10);
       const token = jwt.sign(req.body.email, process.env.SECRET_KEY);
