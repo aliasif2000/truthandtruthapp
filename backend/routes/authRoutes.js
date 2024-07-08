@@ -8,13 +8,12 @@ const otpController = require("../controller/auth/otpController");
 const resetController = require("../controller/auth/resetController");
 const fetchAllUserController = require("../controller/fetchAllUserController");
 const validateJWTToken = require("../middleware/validateJWTToken");
-const validateRandomToken = require("../middleware/validateRandomToken");
 
 authRoutes.get("/getalluser", validateJWTToken, fetchAllUserController);
 authRoutes.post("/login", validateUser("login"), loginController);
 authRoutes.post("/register", validateUser("register"), registerController);
 authRoutes.post("/forgetpassword", forget_password);
-authRoutes.post("/otpcheck", validateRandomToken, otpController);
-authRoutes.post("/resetpassword", validateRandomToken, resetController);
+authRoutes.post("/otpcheck", otpController);
+authRoutes.post("/resetpassword", resetController);
 
 module.exports = authRoutes;

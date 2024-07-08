@@ -4,9 +4,17 @@ const bcrypt = require("bcrypt");
 
 module.exports = resetController = async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const { email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const checkEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!checkEmail) {
+      return res.status(401).send("Invalid Email");
+    }
+
     await prisma.user.update({
-      where: { email: req.user },
+      where: { email },
       data: {
         password: hashedPassword,
       },

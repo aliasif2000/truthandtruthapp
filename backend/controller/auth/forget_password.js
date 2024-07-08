@@ -1,9 +1,22 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const nodemailer = require("nodemailer");
-const randomstring = require("randomstring");
 let checkSendMail;
-sendMail = (name, email, randomToken, otp, res, req) => {
+const deleteOtp = (req) => {
+  checkSendMail = setTimeout(async () => {
+    try {
+      console.log("Otp is Delete");
+      await prisma.otp.delete({
+        where: {
+          email: req.body.email,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, 300000);
+};
+sendMail = (name, email, otp, res, req) => {
   try {
     let transporter = nodemailer.createTransport({
       service: "gmail",
@@ -35,20 +48,8 @@ sendMail = (name, email, randomToken, otp, res, req) => {
         console.error("Error sending email:", err);
         res.status(500).send("Failed to send email.");
       } else {
-        res.status(200).json({ message: "Email has been sent.", randomToken });
-
-        checkSendMail = setTimeout(async () => {
-          try {
-            console.log("Otp is Delete");
-            await prisma.otp.delete({
-              where: {
-                email: req.body.email,
-              },
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        }, 300000);
+        res.status(200).json({ message: "Email has been sent." });
+        deleteOtp(req);
       }
     });
   } catch (error) {
@@ -72,29 +73,21 @@ module.exports = forgerPasswordController = async (req, res) => {
     if (!checkUser) {
       return res.status(401).send("Invalid Credentials.");
     }
-    const randomToken = randomstring.generate();
-    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    const otp = Math.floor(1000 + Math.random() * 9000);
     if (checkOtpUser) {
-      await prisma.user.update({
-        where: { email: req.body.email },
-        data: { token: randomToken },
-      });
       await prisma.otp.update({
         where: { email: req.body.email },
         data: { otp },
       });
     } else {
-      await prisma.user.update({
-        where: { email: req.body.email },
-        data: { token: randomToken },
-      });
       await prisma.otp.create({ data: { email: req.body.email, otp } });
     }
-    //check if mail 
+    //check if mail
     if (checkSendMail) {
       clearTimeout(checkSendMail);
     }
-    sendMail(checkUser.username, checkUser.email, randomToken, otp, res, req);
+    sendMail(checkUser.username, checkUser.email, otp, res, req);
   } catch (error) {
     console.error("Error logging in:", error);
     return res.status(500).send("Internal Server Error");
