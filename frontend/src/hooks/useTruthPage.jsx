@@ -4,8 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 function useTruthPage(api) {
-  const [truthList, setTruthList] = useState([]);
-  const [catName, setCatName] = useState("");
+  const [truthData, setTruthData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addTruth, setAddTruth] = useState("");
   const [initalSlice, setInitalSlice] = useState(0);
@@ -15,8 +14,8 @@ function useTruthPage(api) {
   const fetchTruths = async () => {
     try {
       const data = await adminServices.fetchCategoryTruth(api);
-      setTruthList(data[0].truths);
-      setCatName(data[0].categoryname);
+      setTruthData(data[0]);
+      // setTruthData([]);
       setTimeout(() => {
         setLoading(false);
       }, 1000);
@@ -33,7 +32,7 @@ function useTruthPage(api) {
   }, [api]);
   const handleDeleteTruth = async (id) => {
     await axios.post(`/api/admin/deletetruth`, { id });
-    toast.success(`Truth is Delete in the ${catName} Category`, {
+    toast.success(`Truth is Delete in the ${truthData.categoryname} Category`, {
       position: "top-right",
       autoClose: 2000,
     });
@@ -46,12 +45,12 @@ function useTruthPage(api) {
     try {
       if (addTruth.trim() != "") {
         const truth = {
-          categoryname: catName,
+          categoryname: truthData.categoryname,
           truth: addTruth,
         };
         await axios.post(`/api/admin/addtruth`, truth);
         setAddTruth("");
-        toast.success(`Truth is Added in the ${catName} Category`, {
+        toast.success(`Truth is Added in the ${truthData.categoryname} Category`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -90,7 +89,7 @@ function useTruthPage(api) {
   };
   const handleUpdateTruth = async (value) => {
     await axios.patch(`/api/admin/updatetruth`, value);
-    toast.success(`Truth is Update in the ${catName} Category`, {
+    toast.success(`Truth is Update in the ${truthData.categoryname} Category`, {
       position: "top-right",
       autoClose: 2000,
     });
@@ -109,8 +108,7 @@ function useTruthPage(api) {
     setLastSlice((pv) => pv - 9);
   };
   return {
-    truthList,
-    catName,
+    truthData,
     loading,
     addTruth,
     initalSlice,

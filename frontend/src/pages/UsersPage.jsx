@@ -10,6 +10,7 @@ function Users() {
   const fetchUsers = async () => {
     try {
       const { data } = await axios.get("/api/admin/getalluser");
+
       setUserList(data);
       setTimeout(() => {
         setLoading(false);
@@ -29,19 +30,6 @@ function Users() {
 
   return (
     <div className="divide-y divide-gray-300">
-      {/* <div className="container mx-auto py-8">
-        <div className="flex items-center mb-4">
-          <input
-            type="text"
-            placeholder="Enter truth..."
-            className="flex-1 border border-gray-300 rounded-md px-4 py-2 mr-2 focus:outline-none focus:border-blue-500"
-          />
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
-            Add Truth
-          </button>
-        </div>
-      </div> */}
-
       {userList.length === 0 ? (
         <div className="h-80 flex items-center justify-center">
           <div className="text-center">

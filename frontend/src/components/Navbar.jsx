@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import profile from "../assets/profile.png";
-
+import appIcon from "../assets/appIcon.png";
 function Navbar() {
   const [profileMenu, setProfileMenu] = useState(false);
   const navigate = useNavigate();
@@ -43,21 +43,21 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <img
-              className="h-8 w-8"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+              className="h-12 w-12"
+              src={appIcon}
               alt="Your Company"
             />
           </div>
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center space-x-4">
-              {navItem.map((item) => (
+              {navItem.map((item, index) => (
                 <NavLink
+                  key={index}
                   to={item.path}
                   className={`text-sm font-medium text-gray-300 px-3 py-2 rounded-md hover:bg-gray-700 hover:text-white ${
                     isActive(item.path) ? "bg-red-500 text-white" : ""
                   }`}
-                  activeClassName="bg-red-500 text-white"
                 >
                   {item.name}
                 </NavLink>
@@ -151,9 +151,10 @@ function Navbar() {
       {profileMenu && (
         <div className="md:hidden" id="mobile-profile">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItem.map((item) => (
+            {navItem.map((item, index) => (
               <Link
                 to={item.path}
+                key={index}
                 className="block px-3 py-2 rounded-md text-base font-medium text-white"
                 aria-current="page"
                 onClick={() => setProfileMenu(false)}

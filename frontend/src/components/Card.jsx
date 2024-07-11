@@ -2,7 +2,7 @@ import React from "react";
 
 const Card = ({ imgScr, cardTitle, totalTruth }) => {
   return (
-    <div className="max-w-xs sm:max-w-md md:max-w-lg bg-white rounded-lg shadow-md overflow-hidden mx-2 my-4">
+    <div className="min-w-0 w-full bg-white rounded-lg shadow-md overflow-hidden mx-2 my-4">
       <div className="bg-gray-200 dark:bg-gray-700 p-4 flex items-center justify-center">
         <img
           src={imgScr}

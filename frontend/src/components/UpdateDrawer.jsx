@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "./Button/Button";
 
 function UpdateDrawer({
   openDrawer,
@@ -6,16 +7,19 @@ function UpdateDrawer({
   drawerTruth,
   handleUpdateTruth,
 }) {
-  const [updateTruth, setUpdateTruth] = useState(drawerTruth);
-  const [changeTruth, setChangeTruth] = useState(updateTruth?.truth);
+  const updateTruth = drawerTruth;
+  const [changeTruth, setChangeTruth] = useState(updateTruth?.question);
   const [errors, setErrors] = useState("");
-
   const handleChangeTruth = (e) => {
     setChangeTruth((pv) => ({ ...pv, question: e.target.value }));
   };
   const handleSubmitTruth = () => {
     const checkTruth = changeTruth.question;
-    if (checkTruth.trim() != "" && updateTruth.truth.question != checkTruth) {
+
+    if (
+      checkTruth.trim() != "" &&
+      updateTruth.question.question != checkTruth
+    ) {
       handleUpdateTruth(changeTruth);
       setErrors("");
     } else {
@@ -41,7 +45,7 @@ function UpdateDrawer({
         <div className="p-4">
           <div className="mb-6">
             <label
-              for="category"
+              htmlFor="category"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Category
@@ -68,13 +72,13 @@ function UpdateDrawer({
             placeholder="Enter updated truth..."
           />
           {errors && <span className="text-red-700">{errors}</span>}
+
           <div className="flex justify-end mt-4">
-            <button
+            <Button
+              text=" Update"
               onClick={handleSubmitTruth}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-            >
-              Update
-            </button>
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
+            />
           </div>
         </div>
       </div>

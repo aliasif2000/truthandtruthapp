@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import Navbar from "./components/Navbar";
 import PageTitle from "./components/PageTitle";
 import Page404 from "./pages/Page404";
 import UpdateDrawer from "./components/UpdateDrawer";
