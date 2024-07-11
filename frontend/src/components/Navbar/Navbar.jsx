@@ -1,7 +1,7 @@
 import React, { useState, useId } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import profile from "../assets/profile.png";
-import appIcon from "../assets/appIcon.png";
+import appIcon from "../../assets/appIcon.png";
+import profile from "../../assets/profile.png";
 function Navbar() {
   const [profileMenu, setProfileMenu] = useState(false);
   const navigate = useNavigate();
@@ -42,11 +42,7 @@ function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <img
-              className="h-12 w-12"
-              src={appIcon}
-              alt="Your Company"
-            />
+            <img className="h-12 w-12" src={appIcon} alt="Your Company" />
           </div>
 
           <div className="hidden md:block">

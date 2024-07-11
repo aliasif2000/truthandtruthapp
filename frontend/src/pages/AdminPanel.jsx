@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Card from "../components/Card";
+import Card from "../components/Card/Card";
 import kids from "../assets/children.png";
 import teens from "../assets/teenagers.png";
 import adults from "../assets/couple.png";
 import profile from "../assets/profile.png";
-import Loader from "../components/Loader";
+import Loader from "../components/Loader/Loader";
 import adminServices from "../services/admin_services_api";
 import Table from "../components/Table/Table";
 

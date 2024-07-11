@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn";
-import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import PageTitle from "./components/PageTitle";
 import Page404 from "./pages/Page404";
@@ -31,15 +30,7 @@ function App() {
                 </>
               }
             />
-            <Route
-              path="profile"
-              element={
-                <>
-                  <PageTitle title={"Profile"} />
-                  <ProfilePage />
-                </>
-              }
-            />
+
             <Route
               path="/users"
               element={
