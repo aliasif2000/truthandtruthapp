@@ -15,7 +15,6 @@ function useTruthPage(api) {
     try {
       const data = await adminServices.fetchCategoryTruth(api);
       setTruthData(data[0]);
-      // setTruthData([]);
       setTimeout(() => {
         setLoading(false);
       }, 1000);
