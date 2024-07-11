@@ -129,7 +129,7 @@ function Navbar() {
                 />
               </svg>
               <svg
-                className="hidden h-6 w-6  md:hidden"
+                className="hidden h-6 w-6 md:hidden"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -147,7 +147,7 @@ function Navbar() {
         </div>
       </div>
 
- 
+      {/* Mobile menu */}
       {profileMenu && (
         <div className="md:hidden" id="mobile-profile">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
