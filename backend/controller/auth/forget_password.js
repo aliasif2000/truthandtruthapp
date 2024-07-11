@@ -44,7 +44,7 @@ sendMail = (name, email, otp, res, req) => {
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
+      if (err) {  
         console.error("Error sending email:", err);
         res.status(500).send("Failed to send email.");
       } else {
@@ -93,3 +93,6 @@ module.exports = forgerPasswordController = async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
+
+
