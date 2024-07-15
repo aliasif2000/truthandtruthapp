@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "../components/Loader/Loader";
 import UserTable from "../components/UserTable";
+import adminServices from "../services/admin_services_api";
 
 function Users() {
   const [userList, setUserList] = useState([]);
@@ -9,8 +10,7 @@ function Users() {
 
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get("/api/admin/getalluser");
-
+      const { data } = await adminServices.fetchAllUsers();
       setUserList(data);
       setTimeout(() => {
         setLoading(false);

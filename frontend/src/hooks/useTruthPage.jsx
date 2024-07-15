@@ -13,7 +13,7 @@ function useTruthPage(api) {
   const [drawerTruth, setDrawerTruth] = useState({});
   const fetchTruths = async () => {
     try {
-      const data = await adminServices.fetchCategoryTruth(api);
+      const { data } = await adminServices.fetchCategoryTruth(api);
       setTruthData(data[0]);
       setTimeout(() => {
         setLoading(false);

@@ -16,8 +16,9 @@ function AdminPanel() {
   useEffect(() => {
     (async () => {
       try {
-        const allTruth = await adminServices.fetchAllTruths();
-        const userList = await adminServices.fetchAllUsers();
+        const { data: allTruth } = await adminServices.fetchAllTruths();
+        const userList = await adminServices.fetchAllUsersLength();
+
         setTruthList(allTruth);
         setUserList(userList?.length || 0);
         setTimeout(() => {

@@ -30,6 +30,16 @@ class AdminServices {
       throw error;
     }
   }
+  async fetchAllUsersLength() {
+    try {
+      const { data } = await axios.get("/api/admin/getalluser");
+      let { data: userLength } = data;
+      return userLength;
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      throw error;
+    }
+  }
 }
 
 const adminServices = new AdminServices();
