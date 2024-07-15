@@ -3,6 +3,9 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const asyncHandler = require("../utils/asyncHandler");
+const ApiRespone = require("../utils/ApiRespone");
+const ApiError = require("../utils/ApiError");
 let checkSendMail;
 const deleteOtp = (req) => {
   checkSendMail = setTimeout(async () => {
@@ -60,146 +63,121 @@ sendMail = (name, email, otp, res, req) => {
   }
 };
 
-const forgetPassword = async (req, res) => {
-  try {
-    const checkUser = await prisma.user.findUnique({
-      where: {
-        email: req.body.email,
-      },
-    });
-    const checkOtpUser = await prisma.otp.findFirst({
-      where: {
-        email: req.body.email,
-      },
-    });
-    if (!checkUser) {
-      return res.status(401).send("Invalid Credentials.");
-    }
-
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    if (checkOtpUser) {
-      await prisma.otp.update({
-        where: { email: req.body.email },
-        data: { otp },
-      });
-    } else {
-      await prisma.otp.create({ data: { email: req.body.email, otp } });
-    }
-    //check if mail already send
-    if (checkSendMail) {
-      clearTimeout(checkSendMail);
-    }
-    sendMail(checkUser.username, checkUser.email, otp, res, req);
-  } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).send("Internal Server Error");
+const forgetPassword = asyncHandler(async (req, res) => {
+  const checkUser = await prisma.user.findUnique({
+    where: {
+      email: req.body.email,
+    },
+  });
+  const checkOtpUser = await prisma.otp.findFirst({
+    where: {
+      email: req.body.email,
+    },
+  });
+  if (!checkUser) {
+    return res.status(401).send("Invalid Credentials.");
   }
-};
-const loginUser = async (req, res) => {
-  try {
-    const checkUser = await prisma.user.findUnique({
-      where: {
-        email: req.body.email,
-      },
-    });
 
-    if (!checkUser) {
-      return res.status(401).send("Invalid Credentials");
-    }
+  const otp = Math.floor(1000 + Math.random() * 9000);
+  if (checkOtpUser) {
+    await prisma.otp.update({
+      where: { email: req.body.email },
+      data: { otp },
+    });
+  } else {
+    await prisma.otp.create({ data: { email: req.body.email, otp } });
+  }
+  //check if mail already send
+  if (checkSendMail) {
+    clearTimeout(checkSendMail);
+  }
+  sendMail(checkUser.username, checkUser.email, otp, res, req);
+});
+const loginUser = asyncHandler(async (req, res) => {
+  const checkUser = await prisma.user.findUnique({
+    where: {
+      email: req.body.email,
+    },
+  });
 
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      checkUser.password
-    );
-    if (!passwordMatch) {
-      return res.status(401).send("Invalid Credentials");
-    }
-    const token = jwt.sign(checkUser.email, process.env.SECRET_KEY);
-    return res.status(201).json({ userData: checkUser, token });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).send("Internal Server Error");
+  if (!checkUser) {
+    return res.status(401).send("Invalid Credentials");
   }
-};
-const otpSend = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    if (!email || !otp) {
-      return res.status(400).send("Email and OTP are required");
-    }
-    const checkEmail = await prisma.otp.findFirst({
-      where: {
-        email,
-      },
-    });
-    if (!checkEmail) {
-      return res.status(401).send("Invalid Email");
-    }
-    if (checkEmail.otp != otp) {
-      return res.status(401).send("Invalid Otp");
-    }
 
-    return res.status(201).send("Otp is Valid");
-  } catch (error) {
-    console.error("Error checking OTP:", error);
-    return res.status(500).send("Internal Server Error");
+  const passwordMatch = await bcrypt.compare(
+    req.body.password,
+    checkUser.password
+  );
+  if (!passwordMatch) {
+    return res.status(401).send("Invalid Credentials");
   }
-};
-const registerUser = async (req, res) => {
-  try {
-    const checkUsername = await prisma.user.findUnique({
-      where: {
-        username: req.body.username,
-      },
-    });
-    const checkUser = await prisma.user.findUnique({
-      where: {
-        email: req.body.email,
-      },
-    });
-    if (checkUsername) {
-      return res.status(400).send("Username is Already Exists");
-    }
-    if (!checkUser) {
-      const hash = await bcrypt.hash(req.body.password, 10);
-      const token = jwt.sign(req.body.email, process.env.SECRET_KEY);
-      let addUser = {
-        ...req.body,
-        password: hash,
-      };
-      addUser = await prisma.user.create({ data: addUser });
-      return res.status(201).json({ userData: addUser, token });
-    } else {
-      return res.status(400).send("User is Already Exists");
-    }
-  } catch (error) {
-    console.error("Error registering user:", error);
-    return res.status(500).send("Internal Server Error");
+  const token = jwt.sign(checkUser.email, process.env.SECRET_KEY);
+  return res.status(201).json({ userData: checkUser, token });
+});
+const otpSend = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).send("Email and OTP are required");
   }
-};
-const resetPassword = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const checkEmail = await prisma.user.findUnique({
-      where: { email },
-    });
-    if (!checkEmail) {
-      return res.status(401).send("Invalid Email");
-    }
+  const checkEmail = await prisma.otp.findFirst({
+    where: {
+      email,
+    },
+  });
+  if (!checkEmail) {
+    return res.status(401).send("Invalid Email");
+  }
+  if (checkEmail.otp != otp) {
+    return res.status(401).send("Invalid Otp");
+  }
 
-    await prisma.user.update({
-      where: { email },
-      data: {
-        password: hashedPassword,
-      },
-    });
-    res.status(201).send("Password is Reset");
-  } catch (error) {
-    console.error("Error updating password:", error);
-    res.status(500).send("Failed to reset password.");
+  return res.status(201).send("Otp is Valid");
+});
+const registerUser = asyncHandler(async (req, res) => {
+  const checkUsername = await prisma.user.findUnique({
+    where: {
+      username: req.body.username,
+    },
+  });
+  const checkUser = await prisma.user.findUnique({
+    where: {
+      email: req.body.email,
+    },
+  });
+  if (checkUsername) {
+    return res.status(400).send("Username is Already Exists");
   }
-};
+  if (!checkUser) {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const token = jwt.sign(req.body.email, process.env.SECRET_KEY);
+    let addUser = {
+      ...req.body,
+      password: hash,
+    };
+    addUser = await prisma.user.create({ data: addUser });
+    return res.status(201).json({ userData: addUser, token });
+  } else {
+    return res.status(400).send("User is Already Exists");
+  }
+});
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const checkEmail = await prisma.user.findUnique({
+    where: { email },
+  });
+  if (!checkEmail) {
+    return res.status(401).json(new ApiError(401, "Invaild Email"));
+  }
+
+  await prisma.user.update({
+    where: { email },
+    data: {
+      password: hashedPassword,
+    },
+  });
+  res.status(201).json(new ApiRespone(201, "", "Password is Reset"));
+});
 module.exports = {
   loginUser,
   forgetPassword,
