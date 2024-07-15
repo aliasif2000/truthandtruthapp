@@ -49,10 +49,13 @@ function useTruthPage(api) {
         };
         await axios.post(`/api/admin/addtruth`, truth);
         setAddTruth("");
-        toast.success(`Truth is Added in the ${truthData.categoryname} Category`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.success(
+          `Truth is Added in the ${truthData.categoryname} Category`,
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
         setTimeout(() => {
           fetchTruths();
           setLoading(true);
@@ -87,16 +90,24 @@ function useTruthPage(api) {
     setDrawerTruth(value);
   };
   const handleUpdateTruth = async (value) => {
-    await axios.patch(`/api/admin/updatetruth`, value);
-    toast.success(`Truth is Update in the ${truthData.categoryname} Category`, {
-      position: "top-right",
-      autoClose: 2000,
-    });
-    setTimeout(() => {
-      setOpenDrawer(false);
-      fetchTruths();
-      setLoading(true);
-    }, 2000);
+    try {
+      console.log(value);
+      await axios.patch(`/api/admin/updatetruth`, value);
+      toast.success(
+        `Truth is Update in the ${truthData.categoryname} Category`,
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
+      setTimeout(() => {
+        setOpenDrawer(false);
+        fetchTruths();
+        setLoading(true);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleNextSlice = () => {
     setInitalSlice((pv) => pv + 9);
