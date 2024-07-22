@@ -3,6 +3,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiRespone");
 const ApiError = require("../utils/ApiError");
 const prisma = new PrismaClient();
+
 const findCategoryTruth = async (category, req, res) => {
   const findTruth = await prisma.category.findMany({
     where: {

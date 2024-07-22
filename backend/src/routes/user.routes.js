@@ -7,7 +7,7 @@ const {
   forgetPassword,
   otpSend,
   resetPassword,
-} = require("../controller/user.controller");
+} = require("../controller/user.controller.js");
 
 router.route("/login").post(validateUser("login"), loginUser);
 router.route("/register").post(validateUser("register"), registerUser);
